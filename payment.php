@@ -6,7 +6,7 @@ class CashfreePaymentModuleFrontController extends ModuleFrontController {
 		parent::initContent();
 		$cart = $this->context->cart;
 		
-		$obj = new Paytm();
+		$obj = new Cashfree();
 		$obj->execPayment($cart);
 
 		$this->context->smarty->assign(array(

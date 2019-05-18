@@ -1,6 +1,6 @@
 {extends file=$layout}
 {block name='content'}
-	<div id="paytm_module">
+	<div id="cashfree_module">
 	    <div class="errors">
 			<div class='alert alert-danger error'>
 				{$message}

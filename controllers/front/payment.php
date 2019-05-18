@@ -68,37 +68,15 @@ class CashfreePaymentModuleFrontController extends ModuleFrontController {
 		
 
 
-		// array(
-		// 	"appID" => Configuration::get("Paytm_MERCHANT_ID"),
-		// 	"orderID" => $order_id,
-		// 	#"CUST_ID" => intval($cart->id_name),
-		// 	"orderAmount" => $amount,
-		// 	"customerName" => $customerName,
-		// 	"customerPhone" => $customerPhone,
-		// 	"customerEmail" => $customerEmail,
-		// 	#"_ID" => Configuration::get("Paytm_MERCHANT_CHANNEL_ID"),
-		// 	#"INDUSTRY_TYPE_ID" => Configuration::get("Paytm_MERCHANT_INDUSTRY_TYPE"),
-		// 	#"WEBSITE" => Configuration::get("Paytm_MERCHANT_WEBSITE"),
-		// 	"returnUrl" => $returnUrl,
-		// 	"signature" => $signature,
-
-		// );
 
 
 
-		// if(isset($bill_address->phone_mobile) && trim($bill_address->phone_mobile) != "")
-		// 	$post_variables["MOBILE_NO"] = preg_replace("#[^0-9]{0,13}#is", "", $bill_address->phone_mobile);
-
-		// if(isset($customer->email) && trim($customer->email) != "")
-		// 	$post_variables["EMAIL"] = $customer->email;
-
-		// if (Configuration::get("Cashfree_CALLBACK_URL_STATUS") == "0")
-		// 	$post_variables["CALLBACK_URL"] = $this->module->getDefaultCallbackUrl();
-		// else
-		// 	$post_variables["CALLBACK_URL"] = Configuration::get("Cashfree_CALLBACK_URL");
 
 
-		//$post_variables["CHECKSUMHASH"] = getChecksumFromArray($post_variables, Configuration::get("Cashfree_MERCHANT_KEY"));
+
+
+
+
 
 		$smarty->assign(
 						array(
@@ -120,6 +98,6 @@ class CashfreePaymentModuleFrontController extends ModuleFrontController {
 		
 		// return $this->display(__FILE__, 'cashfree.tpl');
 		$this->setTemplate('cf_payment_form.tpl');
-		// return $this->display(__FILE__, 'payment_form.tpl');
+		
 	}
 }

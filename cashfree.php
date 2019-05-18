@@ -36,10 +36,7 @@ class Cashfree extends PaymentModule
 			Configuration::updateValue("Cashfree_MERCHANT_ID", "");
 			Configuration::updateValue("Cashfree_MERCHANT_KEY", "");
 			Configuration::updateValue("Cashfree_TRANSACTION_STATUS_URL", "");
-			Configuration::updateValue("Cashfree_GATEWAY_URL", "");
-			#Configuration::updateValue("Paytm_MERCHANT_INDUSTRY_TYPE", "");
-			#Configuration::updateValue("Paytm_MERCHANT_CHANNEL_ID", "WEB");
-			#Configuration::updateValue("Paytm_MERCHANT_WEBSITE", "");
+			Configuration::updateValue("Cashfree_GATEWAY_URL", "");			
 			Configuration::updateValue("Cashfree_CALLBACK_URL_STATUS", 0);
 			Configuration::updateValue("Cashfree_CALLBACK_URL", $this->getDefaultCallbackUrl());
 			
@@ -51,7 +48,7 @@ class Cashfree extends PaymentModule
 				$this->setCashfreeOrderState('Cashfree_ID_ORDER_FAILED','Payment Failed','#E77471');
 				$this->setCashfreeOrderState('Cashfree_ID_ORDER_PENDING','Payment Pending','#F4E6C9');
 
-				//Setting setPaytmOrderState -> setCashfreeOrderState; pls check for errors
+				
 				Configuration::updateValue('Cashfree_ORDER_STATE', '1');
 			}		
 			return true;
@@ -66,10 +63,7 @@ class Cashfree extends PaymentModule
 		if (!Configuration::deleteByName("Cashfree_MERCHANT_ID") OR 
 			!Configuration::deleteByName("Cashfree_MERCHANT_KEY") OR 
 			!Configuration::deleteByName("Cashfree_TRANSACTION_STATUS_URL") OR 
-			!Configuration::deleteByName("Cashfree_GATEWAY_URL") OR 
-			#!Configuration::deleteByName("Paytm_MERCHANT_INDUSTRY_TYPE") OR 
-			#!Configuration::deleteByName("Paytm_MERCHANT_CHANNEL_ID") OR 
-			#!Configuration::deleteByName("Paytm_MERCHANT_WEBSITE") OR 
+			!Configuration::deleteByName("Cashfree_GATEWAY_URL") OR 			
 			!Configuration::deleteByName("Cashfree_CALLBACK_URL_STATUS") OR 
 			!Configuration::deleteByName("Cashfree_CALLBACK_URL") OR 
 			!parent::uninstall()) {
@@ -134,9 +128,6 @@ class Cashfree extends PaymentModule
 				Configuration::updateValue("Cashfree_MERCHANT_ID", $_POST["merchant_id"]);
 				Configuration::updateValue("Cashfree_MERCHANT_KEY", $_POST["merchant_key"]);
 				Configuration::updateValue("Cashfree_GATEWAY_URL", $_POST["gateway_url"]);
-				#Configuration::updateValue("Paytm_MERCHANT_INDUSTRY_TYPE", $_POST["industry_type"]);
-				#Configuration::updateValue("Paytm_MERCHANT_CHANNEL_ID", $_POST["channel_id"]);
-				#Configuration::updateValue("Paytm_MERCHANT_WEBSITE", $_POST["website"]);
 				Configuration::updateValue("Cashfree_TRANSACTION_STATUS_URL", $_POST["status_url"]);
 				Configuration::updateValue("Cashfree_STATUS", $_POST["callback_url_status"]);
 				Configuration::updateValue("Cashfree_CALLBACK_URL", $_POST["callback_url"]);
@@ -185,12 +176,7 @@ class Cashfree extends PaymentModule
 							$_POST["merchant_id"] : Configuration::get("Cashfree_MERCHANT_ID");
 		$merchant_key = isset($_POST["merchant_key"])? 
 							$_POST["merchant_key"] : Configuration::get("Cashfree_MERCHANT_KEY");
-		/*$industry_type = isset($_POST["industry_type"])? 
-							$_POST["industry_type"] : Configuration::get("Paytm_MERCHANT_INDUSTRY_TYPE");*/
-		/*$channel_id = isset($_POST["channel_id"])? 
-							$_POST["channel_id"] : Configuration::get("Paytm_MERCHANT_CHANNEL_ID");/*
-		$website = isset($_POST["website"])? 
-							$_POST["website"] : Configuration::get("Paytm_MERCHANT_WEBSITE");*/
+		
 		$gateway_url = isset($_POST["gateway_url"])? 
 							$_POST["gateway_url"] : Configuration::get("Cashfree_GATEWAY_URL");
 		$status_url = isset($_POST["status_url"])? 
@@ -317,9 +303,9 @@ class Cashfree extends PaymentModule
 			"ORDER_ID" => $order_id,
 			"CUST_ID" => intval($cart->id_customer),
 			"TXN_AMOUNT" => $amount,
-			"CHANNEL_ID" => Configuration::get("Paytm_MERCHANT_CHANNEL_ID"),
-			"INDUSTRY_TYPE_ID" => Configuration::get("Paytm_MERCHANT_INDUSTRY_TYPE"),
-			"WEBSITE" => Configuration::get("Paytm_MERCHANT_WEBSITE"),
+			"CHANNEL_ID" => Configuration::get("Cashfree_MERCHANT_CHANNEL_ID"),
+			"INDUSTRY_TYPE_ID" => Configuration::get("Cashfree_MERCHANT_INDUSTRY_TYPE"),
+			"WEBSITE" => Configuration::get("Cashfree_MERCHANT_WEBSITE"),
 		);
 
 		if(isset($bill_address->phone_mobile) && trim($bill_address->phone_mobile) != "")
@@ -328,28 +314,28 @@ class Cashfree extends PaymentModule
 		if(isset($customer->email) && trim($customer->email) != "")
 			$post_variables["EMAIL"] = $customer->email;
 
-		if (Configuration::get("Paytm_CALLBACK_URL_STATUS") == "0")
+		if (Configuration::get("Cashfree_CALLBACK_URL_STATUS") == "0")
 			$post_variables["CALLBACK_URL"] = $this->getDefaultCallbackUrl();
 		else
-			$post_variables["CALLBACK_URL"] = Configuration::get("Paytm_CALLBACK_URL");
+			$post_variables["CALLBACK_URL"] = Configuration::get("Cashfree_CALLBACK_URL");
 
 
-		$post_variables["CHECKSUMHASH"] = getChecksumFromArray($post_variables, Configuration::get("Paytm_MERCHANT_KEY"));
+		$post_variables["CHECKSUMHASH"] = getChecksumFromArray($post_variables, Configuration::get("Cashfree_MERCHANT_KEY"));
 
 
 		/* make log for all payment request */
-		if(Configuration::get('Paytm_ENABLE_LOG')){
+		if(Configuration::get('Cashfree_ENABLE_LOG')){
 			$log_entry = "Request Type: Process Transaction (DEFAULT)". PHP_EOL;
-			$log_entry .= "Request URL: " . Configuration::get("Paytm_GATEWAY_URL") . PHP_EOL;
+			$log_entry .= "Request URL: " . Configuration::get("Cashfree_GATEWAY_URL") . PHP_EOL;
 			$log_entry .= "Request Params: " . print_r($post_variables, true) .PHP_EOL.PHP_EOL;
-			Paytm::addLog($log_entry, __FILE__, __LINE__);
+			Cashfree::addLog($log_entry, __FILE__, __LINE__);
 		}
 		/* make log for all payment request */
 		
 		$smarty->assign(
 						array(
 							"cashfree_post" => $post_variables,
-							"action" => Configuration::get("Paytm_GATEWAY_URL")
+							"action" => Configuration::get("Cashfree_GATEWAY_URL")
 							)
 					);
 
